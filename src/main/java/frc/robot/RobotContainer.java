@@ -43,11 +43,12 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+        joystick.rightStick().onTrue(Commands.runOnce(() -> drivetrain.seedFieldCentric(), drivetrain).ignoringDisable(true));
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(joystick.getLeftX() * MaxSpeed) // Drive forward with X (forward)
-                    .withVelocityY(-joystick.getLeftY() * MaxSpeed) // Drive left with -Y (left)
+                drive.withVelocityX(-joystick.getLeftX() * MaxSpeed) // Drive forward with -X (forward)
+                    .withVelocityY(joystick.getLeftY() * MaxSpeed) // Drive left with Y (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -75,6 +76,10 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+    }
+
+    public CommandSwerveDrivetrain getDrivetrain() {
+        return drivetrain;
     }
 
     public Command getAutonomousCommand() {
